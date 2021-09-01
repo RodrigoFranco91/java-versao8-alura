@@ -1,0 +1,70 @@
+Neste capítulo falamos de Stream. Com Stream poderemos ordernar, filtrar, remover, somar, dividir e fazer outras operações com os 
+itens de uma Collection!
+
+Toda Collection tem o método Stream! Mas o Stream não é Collection!
+
+
+1) Primeiro exemplo, vamos criar uma lista de objetos do tipo Curso e adicionar alguns cursos nesta lista:
+
+        List<Curso> cursos = new ArrayList<>();
+        cursos.add(new Curso("Python", 45));
+        cursos.add(new Curso("JavaScript", 150));
+        cursos.add(new Curso("JAva 8", 113));
+        cursos.add(new Curso("C", 55));
+
+
+Agora vamos order essta lista, pela quantidade de alunos em cada curso, vamos utilizar Metho Reference para isso:
+
+        cursos.sort(Comparator.comparing(Curso::getAlunos));
+        
+
+Agora vamos percorrer a lista e printar cada elemento, primeira mente com Method Reference:
+
+	cursos.forEach(System.out::println);
+	
+	
+O problema do código anterior é que estamos printando o endereço de memoria de cada objeto Curso, para resolver isso temos que
+sobrescrever o método toString() da classe Curso. Mas não queremos isso, queremos usar o meto getNome(), então vamos percorrer a lista 
+e printar cada elemento utilizando lambda:
+
+        cursos.forEach(c -> System.out.println(c.getNome()));
+
+
+Agora surge a necessidade de percorrer todos itens da lista, mas só queremos mostrar os cursos que possuem mais de 100 alunos, para 
+isso vamos usar o método filter(), só que esse e outros metodos de manipulação não estão na interface List e sim na Stream, então 
+temos que chamar primeiro stream() e depois o filter(). Podemos fazer isso assim:
+
+        cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .forEach(c -> System.out.println(c.getNome()));
+                
+
+Agora surge a necessidade de percorrer todos itens da lista, mas só queremos selecionar os cursos que possuem mais de 100 alunos e
+exibir essa quantidade. Poderiamos utilizar o código anterior, e no lugar de c.getNome() fazer c.getAlunos(), mas desta forma se 
+precisassemos manipular essa quantidade não poderiamos. Vamos resolver isso usando o método map(), pois com ele vamos mapear uma
+Stram de Cursos para uma Stram de int e se precisar poderemos manipular essa Stream. Veja:
+
+        cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .map(c -> c.getAlunos())
+                .forEach(total -> System.out.println(total));.
+                
+
+Vamos resolver o mesmo problema anterior, mas agora com Method Reference:
+
+        cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .map(Curso::getAlunos)
+                .forEach(System.out::println);
+                
+                
+Agora surge a necessidade de somar a quantidade de alunos que estão nos cursos que possuem mais de 100 alunos. Para isso vamos trocar
+o metodo map() por mapInt(), pois assim teremos como fazer operaçoes matematicas, como o sum(). O resultado de todos os métodos de
+stram() devem ser guradados em uma variável. Veja como ficará:
+
+        int totalALunos = cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .mapToInt(Curso::getAlunos)
+                .sum();
+
+        System.out.println(totalALunos);

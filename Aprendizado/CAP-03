@@ -1,0 +1,47 @@
+Neste capítulo falamos sobre Method References:
+
+
+1) O primeiro passo é ter em mente que Method Reference é uma maneira de escrever uma função Lambda! E que Method Reference não é
+Reflaction! Outro ponto importante é entender que argumento do tipo Function (que é uma interface funcional) pode ser passado o 
+Lambda/Method Reference.
+
+O Method Reference será utilizado quando dado um objeto, queremos apenas chamar um método deste objeto!
+
+
+2) Sabemos que no Java nenhum método recebe Lambda como argumento, uma função pode receber uma Interface Funcional, que é aquela
+Interface que tem apenas um método abstrato para ser implementado (mas que pode ter outros métodos defaults), mas é comum falarmos que
+um método recebe um Lambda ao invés de falar que ele recebe uma Interface Funcional!
+
+
+3) Usando o Method Refefence na prática. Você se lembra quando criamos um Comparator através de Lambda?! Ficou assim:
+
+	palavras.sort((s1, s2) -> Integer.compare(s1.length(), s2.length()));
+	
+Isso funcionou, pois o método sort() recebe um Comparator, e Comparator é uma interface funcional que tem apenas o método chamado
+compare() que recebe 2 argumentos e retorna um inteiro, logo a função lambda que escrevemos vai ser inserida nesse Comparator!
+
+No lugar do Lambda poderiamos usar Method Reference, mas neste caso teriamos que usar um método default da interface Comparator para
+criar um comparator, que no caso seria o metodo comparing(), e o argumento de comparing() seria um método reference, ficando assim:
+
+       palavras.sort(Comparator.comparing(String::length));
+       
+Sem utilizar Method Reference esse mesmo código ficaria assim:
+
+        palavras.sort(Comparator.comparing(s -> s.length()));
+        
+Ou seja, a sintaxe do Method Reference é o tipo do objeto + :: + método a ser chamado sem usar os parenteses.
+       
+Note que é comum fazer um import estatico da interface Comparator, se fizessemos o código com Method Reference ficaria assim:
+
+	palavras.sort(comparing(String::length));
+	
+	
+4) Outro exemplo da diferença do código com Lambda e Method Reference:
+
+Com lambda:
+
+	palavras.forEach(s -> System.out.println(s));
+	
+Com Method Reference:
+
+	palavras.forEach(System.out::println);

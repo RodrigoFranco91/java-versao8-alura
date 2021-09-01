@@ -1,0 +1,64 @@
+Neste capitulo aprendemos sobre a API de Data que entrou no Java 8, no caso LocalDate e LocalDateTime e sua derivadas...
+
+
+1) Criamos a classe Datas com o método main para exemplificar a manipulação de datas. Tenha em mente que as classes datas possuem
+muitos método estaticos e que toda API de data é imutavel, logo quando fazemos uma operação em cima de uma data devemos guardar o 
+retorno em outra variável, pois a original não será alterada.
+
+Pegando a data de hoje:
+
+        LocalDate hoje = LocalDate.now();
+        
+        
+Criando uma data, passando o valor do ano, mes e dia:
+
+        LocalDate dataOlimpiadas = LocalDate.of(2016, Month.JUNE, 5);
+        
+
+Calculando a diferença de datas:
+
+	Calculo na mão:
+	
+	        int anos = hoje.getYear() - dataOlimpiadas.getYear();
+	        
+	Calculo com a classe Period. A resposta seguira o padrão: P de Period, Y de ano, M de mes e D de dia. 
+	Haverá metodos para pegar a diferença do dia, mes, ano:
+	
+	        Period periodo = Period.between(hoje, dataOlimpiadas);
+	        periodo.getDays();
+	        
+	        
+Subtrair uma valor da data, usamos o método minus():
+
+        LocalDate olimpiadasMenosVinte = dataOlimpiadas.minusDays(20);
+        
+        
+Adicionar uma valor na data, usamos o método plus():
+
+        LocalDate proximaOlimpiadas = dataOlimpiadas.plusYears(4);
+        
+        
+Formatando a maneira de exibir a data. Devemos criar um objeto do tipo DateTimeFormatter:
+
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataFormatada = proximaOlimpiadas.format(formatador);
+        System.out.println(dataFormatada);
+        
+
+2) Manipulando data e horario. Devemos usar a classe LocalDateTime:
+
+        LocalDateTime agora = LocalDateTime.now();
+        DateTimeFormatter formatadorComHoras = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
+        System.out.println(agora.format(formatadorComHoras));
+        
+        
+É possível convertar LocalDateTime para LocalDate e vice-versa:
+
+        LocalDate conversao = agora.toLocalDate();
+        
+        
+3) Existe uma classe para cada estrutura de data, por exemplo: classe para Dia, DiaMes, Ano e mes...
+
+        YearMonth mes = YearMonth.of(2020, Month.APRIL);
+        LocalTime intervaloSomenteTempo = LocalTime.of(35,30);
+

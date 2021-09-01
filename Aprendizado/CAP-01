@@ -1,0 +1,94 @@
+Neste capítulo aprendemos o que é Default Methods.
+
+
+1) Lembra que para ordernar uma lista usavamos a classe Collections, pois nela há diversos métodos estaticos e um deles é o sort(),
+pois bem, a partir do Java 8 podemos fazer de outra forma. Veja o exemplo:
+
+
+Criando uma lista de String:
+
+        List<String> palavras = new ArrayList<>();
+        palavras.add("alura online");
+        palavras.add("editora casa do codigo");
+        palavras.add("caelum");
+        
+        
+Odenando a lista de string. Só será possível pois String implementa a interface Comparable. Por padrão de String a ordenação será por
+ordem alfabetica:
+
+        Collections.sort(palavras);
+        
+        
+Mas e agora se eu quiser ordernar por outra forma, por exemplo por tamanho de letras, onde a primeira palavra será a que tiver menos
+letras?
+
+	Para criar uma ordenção temos que criar um objeto Comparator, então vamos criar a classe ComparadorPorTamnho e esta
+classe implementará a interface Comparator e implementará o método  compare(), veja:
+
+	class ComparandoPorTamanho implements Comparator<String> {
+	    
+	    @Override
+	    public int compare(String o1, String o2) {
+		return 0;
+	    }
+	}
+	
+
+	O metodo compare() funciona assim, se o s1 for vir antes do s2, devemos retornar um valor negativo (-1), se o s1 for vir 
+depois do s2 devemos retornar um valor positivo (1) e se s1 empatar com s2 devemos retornar 0, veja como ficou:
+	
+	class ComparandoPorTamanho implements Comparator<String> {
+
+	    @Override
+	    public int compare(String s1, String s2) {
+		if(s1.length() < s2.length()){
+		    return -1;
+		}
+		if(s1.length() > s2.length()){
+		    return 1;
+		}
+		return 0;
+	    }
+	}
+	
+
+	Agora podemos criar o objeto Comparator e ordernar nossa lista. Basta criar o objeto e ao chamar o método sort() de
+Collections enviar a lista e o objeto Comparator. Veja:
+
+        Comparator<String> comparador = new ComparandoPorTamanho();
+        Collections.sort(palavras, comparador);
+        System.out.println(palavras);
+        
+        
+2) Com o Java 8 podemos fazer diferente! Todo objeto List tem o método sort(), mas acontecerá a mesma coisa, por padrão uma lista de 
+String vai ordernar por ordem alfabética, então passamos como argumento para o método sort() um objeto Comparator! Veja:
+
+        palavras.sort(comparador);
+        System.out.println(palavras);
+        
+       
+3) O método sort() está na interface List, e o mais estranho é que ele tem um CORPO, até então pensavamos que um método de interface
+só tinha assinatura, é então que surge o Default Methods! Que é um método de interface que tem corpo e esse copro é padrão para todas
+as classes que implementam a interface! Com o Desfault Methods é possivel adicionar metodos em interfaces que já possuem
+implementações sem quebrá-las, ou seja, uma interface pode evoluir!
+
+
+4) Usando outro Default Methods, que no casó é o metodo forEach() que toda lista tem. Esse método é da interface Iterable e ele
+recebe como argumento um Consumer, logo teremos que criar um objeto desse tipo! Vamos fazer o objeto Consumer somente printar o
+elemento. Veja como ficará:
+
+Criando a classe do tipo consumer:
+
+	class ImprimeNaLinha implements  Consumer<String>{
+
+	    @Override
+	    public void accept(String s) {
+		System.out.println(s);
+	    }
+	}
+
+USando o método forEach():
+
+        Consumer<String> consumidor = new ImprimeNaLinha();
+        palavras.forEach(consumidor);
+        

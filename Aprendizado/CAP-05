@@ -1,0 +1,85 @@
+Neste capitulo usamos mais recursos do Stream e aprendemos sobre a classe Optional.
+
+
+1) Para aplicar todo esse conceito, novamente criamos uma Lista de Curso, veja:
+
+        List<Curso> cursos = new ArrayList<>();
+        cursos.add(new Curso("Python", 45));
+        cursos.add(new Curso("JavaScript", 150));
+        cursos.add(new Curso("JAva 8", 113));
+        cursos.add(new Curso("C", 55));
+        
+
+Agora surge a necessidade de filtar apenas os cursos que tenha 100 ou mais alunos e de pegar aleatoriamente um Curso (item da Stream)
+qualquer, veja como se faz isso:
+
+        Optional<Curso> optionalCurso = cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .findAny();
+                
+Note que o retorno foi do tipo Optional<Curso>, pois pode ou não haver cursos com 100 ou mais alunos.
+
+Tendo um objeto do tipo Optional, podemos manipulá-lo da seguinte forma:
+
+	Verificando se há Curso (ou outro objeto) dentro do optional:
+	
+		boolean present = optionalCurso.isPresent();
+		
+	
+	Extraindo o elemento de dentro do Optional:
+
+		if(present){
+		    Curso cursoPreente = optionalCurso.get();
+		}
+		
+		
+	Extraindo o elemento de dentro do Optional, caso não tenha faço retornar null:
+	
+	        Curso curso = optionalCurso.orElse(null);
+	        
+	        
+	Verificando se há elemento dentro de optional, caso tenha vou printá-lo:
+	
+	        optionalCurso.ifPresent(System.out::println);
+	        
+	        
+	Verificando se há elemento dentro de optional, caso tenha vou printá-lo usando Lambda:        
+	        
+	        optionalCurso.ifPresent(c -> System.out.println(c.getNome()));
+	        
+	        
+2) Surgiu a necessidade de Calcular a média de alunos dos cursos com 100 ou mais alunos:
+
+        OptionalDouble average = cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .mapToInt(c -> c.getAlunos())
+                .average();
+                
+O retorno também é Optional, pois caso não tivesse curso com 100 ou mais alunos haveria uma divisão por zero e isso daria erro!.
+
+
+3) Lembra que Stream não manipula/altera a estrutura original?! Mas e se quisessemos colocar o resultado da manipulação em outra
+Lista ou Collection? Para isso basta usar o metodo collect(). Veja:
+
+        List<Curso> novaLista = cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .collect(Collectors.toList());
+                
+E se quisessomos colocar em um mapa? Mapa tem Chave e valor. Ficaria assim:
+
+        Map<String, Integer> mapa = cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .collect(Collectors.toMap(
+                        //O primeiro é chave e o segundo valor.
+                        c -> c.getNome(), c -> c.getAlunos()
+                ));
+                
+Só que é comum nem guardamos referencia de uma nova lista, é comum fazer tudo direto, veja o exemplo com mapa:
+
+        cursos.stream()
+                .filter(c -> c.getAlunos() >= 100)
+                .collect(Collectors.toMap(
+                        //O primeiro é chave e o segundo valor.
+                        c -> c.getNome(), c -> c.getAlunos()))
+                .forEach((chave, valor) -> System.out.println(chave + " "+ valor));
+    }

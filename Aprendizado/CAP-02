@@ -1,0 +1,220 @@
+Neste capíotulo falamos sobre classes anonimas e Lambdas:
+
+
+1) Antes de falarmos de lambda vamos falar de classes anonimas! Lembra que para ordernar uma lista com um critério criado por nos
+tivemos que criar as classe ComparandoPorTamanho que implementava Comparator<String> ?! Veja que essa classe tem apenas um método
+e não tem atributos e certamente não sera  re-utilizada em outro lugar, por isso podemos substituí-la por uma classe anonima. Veja a
+comparação:
+
+Usando a classe normal:
+
+	Criando a classe:
+	
+		class ComparandoPorTamanho implements Comparator<String> {
+
+		    @Override
+		    public int compare(String s1, String s2) {
+			if(s1.length() < s2.length()){
+			    return -1;
+			}
+			if(s1.length() > s2.length()){
+			    return 1;
+			}
+			return 0;
+		    }
+		}
+	
+	Utilizando o objeto da classe:
+	
+		Comparator<String> comparador = new ComparandoPorTamanho();
+		Collections.sort(palavras, comparador);
+		
+		
+Usando classe anonima (não criamos a classe):
+
+
+	Comparator<String> comparador = new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                if(s1.length() < s2.length()){
+                    return -1;
+                }
+                if(s1.length() > s2.length()){
+                    return 1;
+                }
+                return 0;
+            }
+        };
+        Collections.sort(palavras, comparador);
+        System.out.println(palavras);
+        
+        
+Lembra que também tinhamos uma classe ImprimeNaLinha que implementava Consumer e ela servia apenas para criar um objeto consumer que
+sabia printar um elemento na tela?! Vamos subistitui essa classe por uma classe anonima. Veja a comparação:
+
+Usando a classe normal:
+
+	Criando a classe:
+	
+		class ImprimeNaLinha implements  Consumer<String>{
+
+		    @Override
+		    public void accept(String s) {
+			System.out.println(s);
+		    }
+		}
+	
+	Utilizando o objeto da classe:
+	
+		Consumer<String> consumidor = new ImprimeNaLinha();
+		palavras.forEach(consumidor);
+		
+		
+Usando classe anonima (não criamos a classe):
+
+        Consumer<String> consumidor = new Consumer<String>(){
+
+            @Override
+            public void accept(String s) {
+                System.out.println(s);
+            }
+        };
+        palavras.forEach(consumidor);
+        
+        
+2) Melhorando a clase anonima. VEja que nos dois exemplos tivemos que criar uma referencia da classe anonima e depois passar essa
+referencia como parametro para o método que queriamos usar (sort e forEach). Podemos passar direto o trecho da classe anonima como
+parametro, veja como é mais comum de ser usado:
+
+	Exemplo 1:
+	        
+		palavras.sort(new Comparator<String>() {
+		    @Override
+		    public int compare(String s1, String s2) {
+		        if(s1.length() < s2.length()){
+		            return -1;
+		        }
+		        if(s1.length() > s2.length()){
+		            return 1;
+		        }
+		        return 0;
+		    }
+		});
+
+
+	Exemplo 2:
+	
+		 palavras.forEach(new Consumer<String>(){
+
+		    @Override
+		    public void accept(String s) {
+		        System.out.println(s);
+		    }
+		});
+		
+		
+3) No java 8 surgiu a função Lambda! Veja que o método sort() recebe por parametro um objeto do tipo Comparator e isso acontece
+também no método forEach() que recebe um objeto do tipo Consumer, ambos (Comparator e Consumer) são interfaces que possuem apenas um
+método que precisa ser implementado (os outros são defaults, possuem corpos) e por esse detalhe podemos diretamente passar como
+argumento nessas funções (forEach e sort) a implementação das interfaces e isso se chama função lambda! 
+Interface que tem apenas um método abstrato, que é o caso de Consumer e Comparator são conhecidas como Interface Funcional.
+Veja o lambda na prática:
+
+Exemplo 1:
+
+        palavras.sort((String s1, String s2) -> {
+                if(s1.length() < s2.length()){
+                    return -1;
+                }
+                if(s1.length() > s2.length()){
+                    return 1;
+                }
+                return 0;
+            });
+
+Podemos omitir os tipos de argumento do lambda, pois quase sempre ele consegue inferir:
+
+        palavras.sort((s1, s2) -> {
+                if(s1.length() < s2.length()){
+                    return -1;
+                }
+                if(s1.length() > s2.length()){
+                    return 1;
+                }
+                return 0;
+            });
+
+
+Essa comparação de tamanho de string poderia usar um metodo estatico de Integer e isso deixaria nosso lambda apenas com um comando, 
+ou seja, poderiamos fazer tudo na mesma linha:
+
+        palavras.sort((s1, s2) -> Integer.compare(s1.length(), s2.length()));
+
+
+Exemplo 2:
+
+	palavras.forEach((String s) -> {
+		System.out.println(s);
+	});
+
+Por essa função ter apenas um argumento, podemos deixá-la assim:
+
+        palavras.forEach(s ->{
+            System.out.println(s);
+        });
+        
+Por essa função ter apenas uma linha de código (1 statement), podemos deixar assim:
+
+        palavras.forEach(s -> System.out.println(s));
+        
+        
+Obs: O efeito final será igual os da classe anonima ou criando uma classe Consumer. A compilação (o que acontece por baixo dos panos
+é diferente de usar classe anonima ou criando a classe Consumer). Se o método forEach() recebe um Consumer, o Java vai tentar
+inferir o código do lambda para dentro de um Consumer e vai conseguir!
+
+Tenha em mente que a função lambda funciona assim: antes do simbolo -> vem os argumentos e depois do -> vem o comando que pode ter
+retorno. E a função lambda só pode ser passada como argumento em métodos que recebem um objeto do tipo Interface Funcional, que é
+a interface que tem apenas um método abstrato!
+
+
+4) Entenda a sintaxe do lambda:
+
+O código a baixo funciona e é o mais usado:
+
+        palavras.forEach(s -> System.out.println(s));
+        
+Mas poderiamos fazer assim, que também funcionaria:
+	
+	Consumer<String> impressor = s -> System.out.println(s);
+	palavras.forEach(impressor);
+	
+O código anterior funciona, pois Consumer é uma interface funcional, que seu método abstrato recebe apenas um argumento (foi
+representado por s) e não retorna nada! LOgo o código a seguir NÃO funcionaria:
+
+	Comparator<String> comparador = s -> System.out.println(s);
+	palavras.sort(comparador);
+
+O código anterior não funciona, pois Comparator é uma interface funcional, mas seu método abstrato recebe DOIS argumentos e retorna
+um int, logo para funcionar teria que ser assim:
+
+	Comparator<String> comparador = (s1, s2) -> 1;
+	palavras.sort(comparador);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
